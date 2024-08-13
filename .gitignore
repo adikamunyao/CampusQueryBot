@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+open_env/
+helper.ipynb
