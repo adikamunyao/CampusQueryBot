@@ -16,7 +16,7 @@ def generate_query_embedding(query):
     """Generate embedding for a given query."""
     return model.encode(query)
 
-def find_similar(query, vector_store, top_n=5):
+def find_similar(query, vector_store, top_n=3):
     """Find the most similar documents to the query based on cosine similarity."""
     try:
         if not all(key in vector_store for key in ['documents', 'embeddings', 'metadatas']):
