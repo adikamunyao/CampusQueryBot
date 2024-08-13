@@ -4,3 +4,4 @@ __pycache__/
 .env
 open_env/
 helper.ipynb
+/data
