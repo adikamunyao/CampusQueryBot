@@ -4,10 +4,7 @@ __pycache__/
 .env
 open_env/
 helper.ipynb
-/data
-/chatbot_project
-/chatbot_project/.env
-/chatbot_project/db.sqlite3
-/chatbot_project/data
-finalBot.zip
+chatbot_project/data/
+chatbot_project/.env
+chatbot_project/db.sqlite3
 
