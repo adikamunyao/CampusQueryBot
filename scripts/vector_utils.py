@@ -5,7 +5,7 @@ from sentence_transformers import SentenceTransformer
 
 # Initialize the SentenceTransformer model
 model = SentenceTransformer('paraphrase-MiniLM-L6-v2')
-
+print('Transformer loaded')
 def load_vector_store(filepath):
     """Load the vector store from a JSON file."""
     with open(filepath, 'r') as file:
