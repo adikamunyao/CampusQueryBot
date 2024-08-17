@@ -56,6 +56,11 @@
 
         .chat-box {
             margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+            display: flex;
+            flex-direction: column-reverse;  /* New messages will appear on top */
         }
 
         .chat-box p {
@@ -63,6 +68,7 @@
             padding: 10px;
             border-radius: 4px;
             background-color: #e9e9e9;
+            overflow-wrap: break-word;
         }
 
         .chat-box p strong {
@@ -78,22 +84,73 @@
             background-color: #e0e0e0;
             text-align: left;
         }
+
+        .thinking {
+            text-align: center;
+            font-style: italic;
+            color: #6a0dad;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>RGU Chatbot</h1>
-        <form method="POST">
+        <form id="chat-form" method="POST">
             {% csrf_token %}
-            <input type="text" name="message" placeholder="Type your questions here..." required>
+            <input type="text" name="message" id="user-input" placeholder="Type your questions here about RGU..." required>
             <button type="submit">Send</button>
         </form>
-        {% if user_message %}
-            <div class="chat-box">
-                <p class="user-message"><strong>You:</strong> {{ user_message }}</p>
-                <p class="bot-response"><strong>Bot:</strong> {{ bot_response }}</p>
-            </div>
-        {% endif %}
+        <div id="chat-box" class="chat-box">
+            <!-- Chat messages will be dynamically inserted here -->
+        </div>
     </div>
+
+    <script>
+        document.getElementById('chat-form').onsubmit = function(event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+            var userMessage = document.getElementById('user-input').value.trim();
+
+            if (!userMessage) return;  // Prevent empty submissions
+
+            const chatBox = document.getElementById('chat-box');
+
+            // Create and append user message
+            const userMessageElement = document.createElement('p');
+            userMessageElement.className = 'user-message';
+            userMessageElement.innerHTML = '<strong>You:</strong> ' + userMessage;
+            chatBox.prepend(userMessageElement);
+
+            // Add a thinking indicator
+            const thinkingIndicator = document.createElement('p');
+            thinkingIndicator.classList.add('thinking');
+            thinkingIndicator.innerText = 'responding...';
+            chatBox.prepend(thinkingIndicator);
+
+            fetch('', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Remove the thinking indicator
+                thinkingIndicator.remove();
+
+                // Create and append bot response
+                const botResponseElement = document.createElement('p');
+                botResponseElement.className = 'bot-response';
+                if (data.response) {
+                    botResponseElement.innerHTML = '<strong>Bot:</strong> ' + data.response;
+                } else if (data.error) {
+                    botResponseElement.innerHTML = '<strong>Bot:</strong> ' + data.error;
+                }
+                chatBox.prepend(botResponseElement);
+
+                // Clear the input field
+                document.getElementById('user-input').value = '';
+            });
+        };
+    </script>
 </body>
 </html>
+
